@@ -1,0 +1,52 @@
+# docker-compose.override.yml - ПРИМЕР для локальной разработки
+# 
+# Скопируйте этот файл в docker-compose.override.yml для разработки:
+# cp docker-compose.override.yml.example docker-compose.override.yml
+#
+# Docker Compose автоматически применит настройки из override файла
+
+version: '3.8'
+
+services:
+  webhook-dispatcher:
+    # Переопределяем команду для разработки с hot reload
+    command: ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    
+    # Монтируем код для live reload
+    volumes:
+      - .:/app
+      - ./data:/app/data  # БД остается персистентной
+    
+    # Дополнительные переменные для разработки
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      - DEBUG=1
+      - LOG_LEVEL=DEBUG
+    
+    # Отключаем лимиты ресурсов для разработки
+    deploy:
+      resources: {}
+
+# Для быстрого запуска тестов можно добавить:
+  test-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: webhook-test-runner
+    
+    command: ["python", "-m", "pytest", "tests/", "-v", "--tb=short"]
+    
+    volumes:
+      - .:/app
+    
+    environment:
+      - PYTHONPATH=/app
+      - TEST_MODE=1
+    
+    networks:
+      - webhook-network
+    
+    profiles:
+      - testing

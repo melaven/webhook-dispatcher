@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; color: #1a202c; margin: 0; padding: 20px; }
+        .header { border-bottom: 2px solid #2d3748; padding-bottom: 15px; margin-bottom: 30px; }
+        .title { font-size: 26px; font-weight: bold; color: #1a202c; text-transform: uppercase; }
+        .subtitle { font-size: 12px; color: #718096; margin-top: 5px; }
+        
+        .metrics-grid { display: flex; justify-content: space-between; margin-bottom: 40px; }
+        .metric-card { padding: 20px; background: #f7fafc; border-left: 4px solid #2b6cb0; width: 30%; }
+        .metric-label { font-size: 11px; color: #718096; text-transform: uppercase; letter-spacing: 1px; }
+        .metric-value { font-size: 24px; font-weight: bold; color: #2d3748; margin-top: 5px; }
+        
+        .table-container { margin-top: 30px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background-color: #edf2f7; color: #4a5568; padding: 12px; font-size: 12px; text-transform: uppercase; }
+        td { padding: 12px; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+        .data-table th { font-weight: bold; }
+        .data-table td { color: #2d3748; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">Аналитический отчет: {{ client_name }}</div>
+        <div class="subtitle">Сгенерировано платформой Laurent Nexus | Дата: {{ date }}</div>
+    </div>
+
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-label">Общая выручка</div>
+            <div class="metric-value">{{ total_revenue }}</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Новых лидов</div>
+            <div class="metric-value">{{ total_leads }}</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Конверсия</div>
+            <div class="metric-value">{{ conversion_rate }}%</div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <!-- Сюда вставится готовая HTML-таблица из Pandas -->
+        {{ data_table | safe }}
+    </div>
+</body>
+</html>

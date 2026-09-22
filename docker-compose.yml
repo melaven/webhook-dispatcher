@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  api:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tenable-api
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+    networks:
+      - tenable_internal
+    expose:
+      - "8000"
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  redis:
+    platform: linux/amd64
+    image: redis:7
+    container_name: tenable-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks:
+      - tenable_internal
+    expose:
+      - "6379"
+
+  nginx:
+    platform: linux/amd64
+    image: nginx:1.25
+    container_name: tenable-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - tenable_internal
+    depends_on:
+      - api
+
+networks:
+  tenable_internal:
+    driver: bridge
+
+volumes:
+  redis_data:
+    driver: local
