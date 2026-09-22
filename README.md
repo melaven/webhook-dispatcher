@@ -392,7 +392,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 - **Documentation**: [API Docs](http://localhost:8000/docs) | [ReDoc](http://localhost:8000/redoc)
 - **Issues**: [GitHub Issues](https://github.com/melaven/webhook-dispatcher/issues)
-- **Security**: Report security issues privately to [security@yourcompany.com]
+- **Security**: Report security issues privately to [@hellofsleepingdolls@gmail.com]
 
 ---
 
